@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS exam_records (
   exam_id BIGINT NOT NULL,
   student_id BIGINT NOT NULL,
   status ENUM('IN_PROGRESS','SUBMITTED') NOT NULL,
+  attempt_no INT NOT NULL DEFAULT 1,
   total_score INT NOT NULL DEFAULT 0,
   started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   submitted_at TIMESTAMP NULL,
