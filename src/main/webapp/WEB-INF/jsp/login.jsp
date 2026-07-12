@@ -14,17 +14,16 @@
     <p class="muted">教师组卷、学生考试、自动判分、AI 主观题评阅</p>
     <form method="post" action="<%=request.getContextPath()%>/login" autocomplete="off">
         <label>用户名
-            <input name="username" required placeholder="teacher / student1" autocomplete="off">
+            <input name="username" required placeholder="请输入用户名" autocomplete="off">
         </label>
         <label>密码
-            <input name="password" type="password" required placeholder="123456" autocomplete="new-password">
+            <input name="password" type="password" required placeholder="请输入密码" autocomplete="new-password">
         </label>
         <% if (request.getAttribute("error") != null) { %>
         <p class="error"><%=request.getAttribute("error")%></p>
         <% } %>
         <button type="submit" class="button primary full">登录系统</button>
     </form>
-    <p class="hint">教师：teacher / 123456　学生：student1 / 123456</p>
 </main>
 <script>
     window.addEventListener('pageshow', function () {
