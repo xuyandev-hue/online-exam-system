@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: exam-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123456}
+      MYSQL_DATABASE: ${DB_NAME:-online_exam}
+      MYSQL_USER: ${DB_USER:-exam_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-exam_pass}
+      TZ: Asia/Shanghai
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  web:
+    build: .
+    container_name: exam-web
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-online_exam}
+      DB_USER: ${DB_USER:-exam_user}
+      DB_PASSWORD: ${DB_PASSWORD:-exam_pass}
+      AI_API_URL: ${AI_API_URL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-deepseek-chat}
+      AI_MOCK: ${AI_MOCK:-true}
+      TZ: Asia/Shanghai
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql-data:
