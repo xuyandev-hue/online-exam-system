@@ -307,6 +307,14 @@ tr:last-child td { border-bottom: 0; }
 
 .picker-row:hover { background: #eef4ff; }
 .switch input, .picker-row input { width: auto; }
+.picker-row input[type="checkbox"] {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    padding: 0;
+    accent-color: var(--primary);
+}
 .exam-card h3, .question-item p { margin-top: 0; }
 
 .question-manage-page {
