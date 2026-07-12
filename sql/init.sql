@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS exam_records (
   exam_id BIGINT NOT NULL,
   student_id BIGINT NOT NULL,
   status ENUM('IN_PROGRESS','SUBMITTED') NOT NULL,
+  attempt_no INT NOT NULL DEFAULT 1,
   total_score INT NOT NULL DEFAULT 0,
   started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   submitted_at TIMESTAMP NULL,
@@ -86,4 +87,4 @@ ON DUPLICATE KEY UPDATE content = VALUES(content);
 
 INSERT INTO exams(title, duration_minutes, start_time, end_time, max_attempts, total_score, published, created_by)
 VALUES ('Java Web 基础测试', 30, '2026-01-01 00:00:00', '2027-12-31 23:59:59', 3, 100, 1, 1);
-INSERT IGNORE INTO exam_questions(exam_id, question_id, sort_no, assigned_score) VALUES (1, 1, 1, 5), (1, 2, 2, 5), (1, 3, 3, 5), (1, 4, 4, 10);
+INSERT IGNORE INTO exam_questions(exam_id, question_id, sort_no, assigned_score) VALUES (1, 1, 1, 25), (1, 2, 2, 25), (1, 3, 3, 25), (1, 4, 4, 25);

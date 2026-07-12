@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.0
+    image: m.daocloud.io/docker.io/library/mysql:8.0
     container_name: exam-mysql
     restart: unless-stopped
     environment:

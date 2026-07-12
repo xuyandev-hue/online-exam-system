@@ -300,6 +300,9 @@ tr:last-child td { border-bottom: 0; }
 }
 
 .picker-row {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    column-gap: 10px;
     align-items: flex-start;
     padding: 8px;
     border-radius: 6px;
@@ -307,6 +310,33 @@ tr:last-child td { border-bottom: 0; }
 
 .picker-row:hover { background: #eef4ff; }
 .switch input, .picker-row input { width: auto; }
+.picker-row input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 16px;
+    width: 16px;
+    min-width: 16px;
+    max-width: 16px;
+    height: 16px;
+    min-height: 16px;
+    max-height: 16px;
+    display: block;
+    margin-top: 3px;
+    padding: 0;
+    border: 1px solid #7d8796;
+    border-radius: 3px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.picker-row input[type="checkbox"]:checked {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3.5 8.5 6.5 11.5 12.5 4.5'/%3E%3C/svg%3E");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 14px 14px;
+}
 .exam-card h3, .question-item p { margin-top: 0; }
 
 .question-manage-page {

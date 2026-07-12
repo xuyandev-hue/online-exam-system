@@ -13,6 +13,11 @@ public class GradingService {
         Answer answer = new Answer();
         answer.setQuestionId(question.getId());
         answer.setAnswerText(rawAnswer);
+        if (rawAnswer == null || rawAnswer.isBlank()) {
+            answer.setScore(0);
+            answer.setCommentText("未作答。");
+            return answer;
+        }
         if ("SUBJECTIVE".equals(question.getType())) {
             AiCorrectService.AiResult result = aiCorrectService.correct(question, rawAnswer);
             answer.setScore(result.getScore());
