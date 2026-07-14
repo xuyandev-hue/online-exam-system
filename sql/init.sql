@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS exams (
   start_time DATETIME NULL,
   end_time DATETIME NULL,
   max_attempts INT NOT NULL DEFAULT 1,
+  switch_limit INT NOT NULL DEFAULT 2,
   total_score INT NOT NULL DEFAULT 100,
   published TINYINT(1) NOT NULL DEFAULT 0,
   created_by BIGINT,
@@ -75,7 +76,8 @@ CREATE TABLE IF NOT EXISTS answers (
 INSERT INTO users(username, password, real_name, role, class_name) VALUES
 ('teacher', '123456', '示例教师', 'TEACHER', NULL),
 ('student1', '123456', '张三', 'STUDENT', '软件一班'),
-('student2', '123456', '李四', 'STUDENT', '软件一班')
+('student2', '123456', '李四', 'STUDENT', '软件一班'),
+('student3', '123456', '王五', 'STUDENT', '软件一班')
 ON DUPLICATE KEY UPDATE username = VALUES(username);
 
 INSERT INTO questions(type, content, option_a, option_b, option_c, option_d, answer, analysis, score) VALUES
@@ -85,6 +87,4 @@ INSERT INTO questions(type, content, option_a, option_b, option_c, option_d, ans
 ('SUBJECTIVE', '简述 Docker Compose 在本项目部署中的作用。', NULL, NULL, NULL, NULL, '用于编排 Tomcat 和 MySQL 两个容器，统一配置网络、环境变量和数据卷。', '围绕容器编排、统一启动、环境配置、数据持久化评分。', 10)
 ON DUPLICATE KEY UPDATE content = VALUES(content);
 
-INSERT INTO exams(title, duration_minutes, start_time, end_time, max_attempts, total_score, published, created_by)
-VALUES ('Java Web 基础测试', 30, '2026-01-01 00:00:00', '2027-12-31 23:59:59', 3, 100, 1, 1);
-INSERT IGNORE INTO exam_questions(exam_id, question_id, sort_no, assigned_score) VALUES (1, 1, 1, 25), (1, 2, 2, 25), (1, 3, 3, 25), (1, 4, 4, 25);
+-- 只初始化账号和题库，不自动创建试卷。试卷统一由教师在组卷页面创建。

@@ -11,6 +11,7 @@ public class ExamRecord {
     private String examTitle;
     private String status;
     private int totalScore;
+    private int examTotalScore;
     private int attemptNo;
     private Timestamp startedAt;
     private Timestamp submittedAt;
@@ -31,6 +32,8 @@ public class ExamRecord {
     public void setStatus(String status) { this.status = status; }
     public int getTotalScore() { return totalScore; }
     public void setTotalScore(int totalScore) { this.totalScore = totalScore; }
+    public int getExamTotalScore() { return examTotalScore; }
+    public void setExamTotalScore(int examTotalScore) { this.examTotalScore = examTotalScore; }
     public int getAttemptNo() { return attemptNo; }
     public void setAttemptNo(int attemptNo) { this.attemptNo = attemptNo; }
     public Timestamp getStartedAt() { return startedAt; }

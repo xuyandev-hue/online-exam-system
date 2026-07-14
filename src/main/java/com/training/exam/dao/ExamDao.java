@@ -33,7 +33,7 @@ public class ExamDao {
     }
 
     public void save(Exam exam, long[] questionIds, long userId) throws SQLException {
-        String examSql = "INSERT INTO exams(title, duration_minutes, start_time, end_time, max_attempts, total_score, published, created_by) VALUES(?,?,?,?,?,?,?,?)";
+        String examSql = "INSERT INTO exams(title, duration_minutes, start_time, end_time, max_attempts, switch_limit, total_score, published, created_by) VALUES(?,?,?,?,?,?,?,?,?)";
         try (Connection conn = DBUtil.getConnection()) {
             conn.setAutoCommit(false);
             try (PreparedStatement ps = conn.prepareStatement(examSql, Statement.RETURN_GENERATED_KEYS)) {
@@ -42,9 +42,10 @@ public class ExamDao {
                 ps.setTimestamp(3, exam.getStartTime());
                 ps.setTimestamp(4, exam.getEndTime());
                 ps.setInt(5, exam.getMaxAttempts());
-                ps.setInt(6, exam.getTotalScore());
-                ps.setBoolean(7, exam.isPublished());
-                ps.setLong(8, userId);
+                ps.setInt(6, exam.getSwitchLimit());
+                ps.setInt(7, exam.getTotalScore());
+                ps.setBoolean(8, exam.isPublished());
+                ps.setLong(9, userId);
                 ps.executeUpdate();
                 try (ResultSet keys = ps.getGeneratedKeys()) {
                     keys.next();
@@ -81,6 +82,12 @@ public class ExamDao {
                     assigned = base + (extra > 0 ? 1 : 0);
                     if (extra > 0) extra--;
                 }
+                /*    - q.getScore()：当前题目在题库中的原始分值；
+                      - totalScore：当前试卷总分；
+                      - fixed：所有选中题目的原始分值总和；
+                      - assigned：当前题目在这张试卷中的实际分值；
+                      - scaledAssignedSum：前面题目已经分配的总分。
+                * */
                 ps.setLong(1, examId);
                 ps.setLong(2, q.getId());
                 ps.setInt(3, sortNo++);
@@ -120,6 +127,7 @@ public class ExamDao {
         exam.setStartTime(rs.getTimestamp("start_time"));
         exam.setEndTime(rs.getTimestamp("end_time"));
         exam.setMaxAttempts(rs.getInt("max_attempts"));
+        exam.setSwitchLimit(rs.getInt("switch_limit"));
         exam.setTotalScore(rs.getInt("total_score"));
         exam.setPublished(rs.getBoolean("published"));
         return exam;

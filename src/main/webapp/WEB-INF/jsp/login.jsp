@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线考试系统登录</title>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css?v=20260713-2">
 </head>
 <body class="login-page">
 <main class="login-panel">

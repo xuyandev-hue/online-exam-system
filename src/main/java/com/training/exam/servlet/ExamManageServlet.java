@@ -49,6 +49,7 @@ public class ExamManageServlet extends HttpServlet {
             exam.setStartTime(parseTimestamp(WebUtil.param(request, "startTime")));
             exam.setEndTime(parseTimestamp(WebUtil.param(request, "endTime")));
             exam.setMaxAttempts(parseInt(WebUtil.param(request, "maxAttempts"), 1));
+            exam.setSwitchLimit(Math.max(1, parseInt(WebUtil.param(request, "switchLimit"), 2)));
             exam.setTotalScore(parseInt(WebUtil.param(request, "totalScore"), 100));
             exam.setPublished("on".equals(request.getParameter("published")));
 

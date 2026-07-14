@@ -23,9 +23,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>教师工作台</title>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css?v=20260713-2">
 </head>
-<body>
+<body class="dashboard-page teacher-dashboard-page">
 <header class="topbar">
     <div>
         <strong>教师工作台</strong>
@@ -56,8 +56,8 @@
             <h2>成绩统计与考试次数</h2>
             <a class="button secondary" href="<%=request.getContextPath()%>/teacher/export">导出 CSV</a>
         </div>
-        <table>
-            <thead><tr><th>考试</th><th>学生</th><th>班级</th><th>考试次数</th><th>分数</th><th>提交时间</th></tr></thead>
+        <div class="table-wrap"><table>
+            <thead><tr><th>考试</th><th>学生</th><th>班级</th><th>考试次数</th><th>分数</th><th>提交时间</th><th>操作</th></tr></thead>
             <tbody>
             <% if (records != null && !records.isEmpty()) { for (ExamRecord r : records) { %>
             <tr>
@@ -65,14 +65,15 @@
                 <td><%=r.getStudentName()%></td>
                 <td><%=r.getClassName()%></td>
                 <td>第 <%=r.getAttemptNo()%> 次</td>
-                <td><strong><%=r.getTotalScore()%></strong></td>
+                <td><strong class="score-text"><%=r.getTotalScore()%> / <%=r.getExamTotalScore()%></strong></td>
                 <td><%=r.getSubmittedAt()%></td>
+                <td><a class="button compact secondary" href="<%=request.getContextPath()%>/exam/view?recordId=<%=r.getId()%>">查看试卷</a></td>
             </tr>
             <% }} else { %>
-            <tr><td colspan="6" class="empty">暂无学生提交记录</td></tr>
+            <tr><td colspan="7" class="empty">暂无学生提交记录</td></tr>
             <% } %>
             </tbody>
-        </table>
+        </table></div>
     </section>
 </main>
 </body>

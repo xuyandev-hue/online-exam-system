@@ -82,7 +82,7 @@ public class RecordDao {
     }
 
     public List<ExamRecord> findByStudent(long studentId) throws SQLException {
-        String sql = "SELECT r.*, e.title exam_title FROM exam_records r JOIN exams e ON r.exam_id=e.id WHERE r.student_id=? ORDER BY r.id DESC";
+        String sql = "SELECT r.*, e.title exam_title, e.total_score exam_total_score FROM exam_records r JOIN exams e ON r.exam_id=e.id WHERE r.student_id=? ORDER BY r.id DESC";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, studentId);
@@ -97,7 +97,7 @@ public class RecordDao {
     }
 
     public List<ExamRecord> findBestByStudent(long studentId) throws SQLException {
-        String sql = "SELECT r.*, e.title exam_title FROM exam_records r JOIN exams e ON r.exam_id=e.id "
+        String sql = "SELECT r.*, e.title exam_title, e.total_score exam_total_score FROM exam_records r JOIN exams e ON r.exam_id=e.id "
                 + "WHERE r.student_id=? AND r.status='SUBMITTED' "
                 + "AND r.id=(SELECT r2.id FROM exam_records r2 WHERE r2.student_id=r.student_id AND r2.exam_id=r.exam_id AND r2.status='SUBMITTED' "
                 + "ORDER BY r2.total_score DESC, r2.submitted_at DESC, r2.id DESC LIMIT 1) ORDER BY r.id DESC";
@@ -113,7 +113,7 @@ public class RecordDao {
     }
 
     public List<ExamRecord> findSubmitted() throws SQLException {
-        String sql = "SELECT r.*, e.title exam_title, u.real_name student_name, u.class_name FROM exam_records r "
+        String sql = "SELECT r.*, e.title exam_title, e.total_score exam_total_score, u.real_name student_name, u.class_name FROM exam_records r "
                 + "JOIN exams e ON r.exam_id=e.id JOIN users u ON r.student_id=u.id WHERE r.status='SUBMITTED' ORDER BY r.submitted_at DESC";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -127,8 +127,13 @@ public class RecordDao {
     }
 
     public List<Answer> findAnswers(long recordId) throws SQLException {
+        String sql = "SELECT a.*, q.type question_type, q.content question_content, q.option_a, q.option_b, q.option_c, q.option_d, "
+                + "q.answer correct_answer, q.analysis, eq.assigned_score max_score FROM answers a "
+                + "JOIN exam_records r ON a.record_id=r.id JOIN questions q ON a.question_id=q.id "
+                + "LEFT JOIN exam_questions eq ON eq.exam_id=r.exam_id AND eq.question_id=a.question_id "
+                + "WHERE a.record_id=? ORDER BY eq.sort_no, a.question_id";
         try (Connection conn = DBUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT * FROM answers WHERE record_id=? ORDER BY question_id")) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, recordId);
             try (ResultSet rs = ps.executeQuery()) {
                 List<Answer> list = new ArrayList<>();
@@ -138,6 +143,15 @@ public class RecordDao {
                     answer.setAnswerText(rs.getString("answer_text"));
                     answer.setScore(rs.getInt("score"));
                     answer.setCommentText(rs.getString("comment_text"));
+                    answer.setQuestionType(rs.getString("question_type"));
+                    answer.setQuestionContent(rs.getString("question_content"));
+                    answer.setOptionA(rs.getString("option_a"));
+                    answer.setOptionB(rs.getString("option_b"));
+                    answer.setOptionC(rs.getString("option_c"));
+                    answer.setOptionD(rs.getString("option_d"));
+                    answer.setCorrectAnswer(rs.getString("correct_answer"));
+                    answer.setAnalysis(rs.getString("analysis"));
+                    answer.setMaxScore(rs.getInt("max_score"));
                     list.add(answer);
                 }
                 return list;
@@ -146,7 +160,7 @@ public class RecordDao {
     }
 
     public ExamRecord findById(long recordId) throws SQLException {
-        String sql = "SELECT r.*, e.title exam_title, u.real_name student_name, u.class_name FROM exam_records r "
+        String sql = "SELECT r.*, e.title exam_title, e.total_score exam_total_score, u.real_name student_name, u.class_name FROM exam_records r "
                 + "JOIN exams e ON r.exam_id=e.id JOIN users u ON r.student_id=u.id WHERE r.id=?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -170,6 +184,11 @@ public class RecordDao {
         safeSet(rs, "exam_title", record::setExamTitle);
         safeSet(rs, "student_name", record::setStudentName);
         safeSet(rs, "class_name", record::setClassName);
+        try {
+            record.setExamTotalScore(rs.getInt("exam_total_score"));
+        } catch (SQLException ignored) {
+            // Optional joined column.
+        }
         return record;
     }
 

@@ -29,8 +29,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%=exam.getTitle()%></title>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css">
-    <script defer src="<%=request.getContextPath()%>/static/js/exam.js"></script>
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css?v=20260713-2">
+    <script defer src="<%=request.getContextPath()%>/static/js/exam.js?v=20260713-2"></script>
 </head>
 <body class="exam-page">
 <header class="topbar exam-topbar">
@@ -59,7 +59,7 @@
         <section class="question" id="question-<%=no%>">
             <div class="question-head">
                 <h3>第 <%=no%> 题</h3>
-                <span class="badge"><%=q.getScore()%> 分</span>
+                <span class="badge">本题满分 <%=q.getScore()%> 分</span>
             </div>
             <p class="question-content"><%=q.getContent()%></p>
             <div class="options">
@@ -91,8 +91,8 @@
     <aside class="exam-sidebar">
         <div class="timer-card">
             <span class="timer-label">剩余时间</span>
-            <strong id="sidebarTimer" data-minutes="<%=exam.getDurationMinutes()%>">--:--</strong>
-            <p class="hint">时间结束后系统会自动提交。切屏第一次警告，第二次强制收卷。</p>
+            <strong id="sidebarTimer" data-minutes="<%=exam.getDurationMinutes()%>" data-switch-limit="<%=exam.getSwitchLimit()%>">--:--</strong>
+            <p class="hint">时间结束后系统会自动提交。前 <%=Math.max(0, exam.getSwitchLimit() - 1)%> 次切屏警告，第 <%=exam.getSwitchLimit()%> 次强制收卷。</p>
         </div>
         <div class="question-nav">
             <h3>题目导航</h3>

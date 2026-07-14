@@ -5,6 +5,7 @@ if (sidebarTimer && form) {
     let remaining = Number(sidebarTimer.dataset.minutes || "0") * 60;
     let submitted = false;
     let switchCount = 0;
+    const switchLimit = Math.max(1, Number(sidebarTimer.dataset.switchLimit || "2"));
     const timerCard = sidebarTimer.closest(".timer-card");
 
     const submitExam = () => {
@@ -37,10 +38,10 @@ if (sidebarTimer && form) {
     const handleSwitch = () => {
         if (submitted) return;
         switchCount += 1;
-        if (switchCount === 1) {
-            alert("系统检测到你离开考试页面。第一次警告：第二次切屏将强制提交试卷。");
+        if (switchCount < switchLimit) {
+            alert(`系统检测到你离开考试页面。这是第 ${switchCount} 次警告，第 ${switchLimit} 次切屏将强制提交试卷。`);
         } else {
-            alert("系统检测到第二次切屏，试卷将被强制提交。");
+            alert(`系统检测到第 ${switchCount} 次切屏，已达到限制，试卷将被强制提交。`);
             submitExam();
         }
     };

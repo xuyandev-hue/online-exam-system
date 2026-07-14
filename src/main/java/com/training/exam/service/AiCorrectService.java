@@ -63,19 +63,28 @@ public class AiCorrectService {
         conn.setRequestProperty("Authorization", "Bearer " + apiKey);
         conn.setDoOutput(true);
 
-        String prompt = "你是在线考试系统的主观题阅卷老师。请根据题目、参考答案和学生答案评分。"
-                + "满分为 " + question.getScore() + " 分。"
-                + "如果学生答案与题目无关，必须给 0 分。"
+        String rubric = nullToEmpty(question.getAnalysis()).trim();
+        String scoringInstruction = rubric.isBlank()
+                ? "本题未提供评分标准，请根据参考答案，从内容的正确性、相关性和完整性综合判断，并按实际满分合理给分。"
+                : "本题提供了评分标准，必须逐项判断学生答案命中了哪些评分点，并严格依据评分标准计分。"
+                + "评分标准中的百分比按本题实际满分换算；如果标准写的是固定分值，则将各项固定分值视为相对权重，按本题实际满分等比例换算。";
+
+        String prompt = "你是在线考试系统的主观题阅卷老师。请根据题目、参考答案、评分标准和学生答案评分。\n"
+                + "本题实际满分为 " + question.getScore() + " 分，score 必须是 0 到 " + question.getScore() + " 之间的整数，不得超过实际满分。\n"
+                + scoringInstruction + "\n"
+                + "如果学生未作答或答案与题目无关，必须给 0 分；部分正确时按照已满足的评分点给部分分。\n"
+                + "小数得分四舍五入为整数。comment 要简要说明命中的评分点、缺失内容和计分依据。\n"
                 + "只返回 JSON，不要返回 Markdown。格式：{\"score\":数字,\"comment\":\"简短中文评语\"}。\n"
                 + "题目：" + nullToEmpty(question.getContent()) + "\n"
                 + "参考答案：" + nullToEmpty(question.getAnswer()) + "\n"
+                + "评分标准：" + (rubric.isBlank() ? "未提供" : rubric) + "\n"
                 + "学生答案：" + nullToEmpty(studentAnswer);
 
         String body = "{"
                 + "\"model\":\"" + escapeJson(model) + "\","
                 + "\"temperature\":0.1,"
                 + "\"messages\":["
-                + "{\"role\":\"system\",\"content\":\"你是严谨的考试阅卷助手，只输出 JSON。\"},"
+                + "{\"role\":\"system\",\"content\":\"你是严谨的考试阅卷助手。必须遵守评分标准和实际满分限制，只输出 JSON。\"},"
                 + "{\"role\":\"user\",\"content\":\"" + escapeJson(prompt) + "\"}"
                 + "]"
                 + "}";

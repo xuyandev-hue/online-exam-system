@@ -27,7 +27,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>组卷发布</title>
-    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/static/css/app.css?v=20260713-2">
 </head>
 <body>
 <header class="topbar">
@@ -49,6 +49,8 @@
             <div class="form-grid">
                 <label>答题时长（分钟） <input name="durationMinutes" type="number" min="1" value="30" required></label>
                 <label>允许考试次数 <input name="maxAttempts" type="number" min="1" value="1" required></label>
+                <label>第几次切屏强制收卷 <input name="switchLimit" type="number" min="1" value="2" required></label>
+                <label>规则说明 <input value="阈值前为警告，达到阈值强制提交" disabled></label>
             </div>
             <label>试卷总分 <input name="totalScore" type="number" min="1" value="100" required></label>
             <label class="inline switch"><input name="published" type="checkbox" checked> 发布考试</label>
@@ -88,6 +90,7 @@
             <h3><%=exam.getTitle()%></h3>
             <p>考试时间：<%=exam.getStartTime()%> 至 <%=exam.getEndTime()%></p>
             <p>答题时长：<strong><%=exam.getDurationMinutes()%></strong> 分钟；次数：<strong><%=exam.getMaxAttempts()%></strong>；总分：<strong><%=exam.getTotalScore()%></strong></p>
+            <p>防切屏：前 <strong><%=Math.max(0, exam.getSwitchLimit() - 1)%></strong> 次警告，第 <strong><%=exam.getSwitchLimit()%></strong> 次强制收卷</p>
             <span class="badge"><%=exam.isPublished() ? "已发布" : "未发布"%></span>
         </article>
         <% }} else { %>
@@ -95,6 +98,6 @@
         <% } %>
     </section>
 </main>
-<script src="<%=request.getContextPath()%>/static/js/exam-builder.js"></script>
+<script src="<%=request.getContextPath()%>/static/js/exam-builder.js?v=20260713-2"></script>
 </body>
 </html>
